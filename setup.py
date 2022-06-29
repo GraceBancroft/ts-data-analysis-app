@@ -521,7 +521,8 @@ def ld(df, script_location):
     'NumberOfReversal', 'TotalITITouches', 'TotalBlankTouches', 'MeanRewardCollectionLatency',
     'MeanCorrectTouchLatency', 'MeanIncorrectTouchLatency', 'SessionLengthTo1stReversalDuration',
     'SessionLengthTo2ndReversalDuration', 'NumberOfTrialTo1stReversal', 'NumberOfTrialTo2ndReversal',
-    'PercentCorrectTo1stReversal', 'PercentCorrectTo2ndReversal', 'Day'
+    'PercentCorrectTo1stReversal', 'PercentCorrectTo2ndReversal', 'Day', 'MeanLatencyTo1stReversal',
+    'CorrectTouchLatencyTo1stReversal', 'ITIBlankTouchesTo1stReversal'
 
     Running this function on the wrong test will cause an error message!
 
@@ -556,6 +557,8 @@ def ld(df, script_location):
     reversal_number_header = index_range('End Summary - Times Criteria reached (1)', raw_data_headers)
     iti_blank_header = index_range('End Summary - Left ITI touches (1)', raw_data_headers) + index_range(
         'End Summary - Right ITI touches (1)', raw_data_headers)
+    iti_to_first_left_header = index_range('Trial Analysis - Left ITI Touches (', raw_data_headers)
+    iti_to_first_right_header = index_range('Trial Analysis - Right ITI Touches (', raw_data_headers)
     blank_header = index_range('End Summary - Left Blank Touches - Generic Counter (1)', raw_data_headers) + \
                    index_range('End Summary - Right Blank Touches - Generic Counter (1)', raw_data_headers) + \
                    index_range('End Summary - Top row touches - Generic Counter (1)', raw_data_headers)
@@ -573,7 +576,8 @@ def ld(df, script_location):
                  'TotalITITouches', 'TotalBlankTouches', 'MeanRewardCollectionLatency', 'MeanCorrectTouchLatency',
                  'MeanIncorrectTouchLatency', 'SessionLengthTo1stReversalDuration',
                  'SessionLengthTo2ndReversalDuration', 'NumberOfTrialTo1stReversal', 'NumberOfTrialTo2ndReversal',
-                 'PercentCorrectTo1stReversal', 'PercentCorrectTo2ndReversal', 'Day']
+                 'PercentCorrectTo1stReversal', 'PercentCorrectTo2ndReversal', 'Day', 'MeanLatencyTo1stReversal',
+                 'CorrectTouchLatencyTo1stReversal', 'ITIBlankTouchesTo1stReversal']
 
     df_final = pd.DataFrame(columns=col_names)
 
@@ -605,10 +609,26 @@ def ld(df, script_location):
         get_fixed_session_time(df_final, df)
 
         number_correct_column_names = get_header_names(raw_data_headers, number_correct_header)
+        number_mean_reward_first_column_names = get_header_names(raw_data_headers, mean_reward_header)
+        number_mean_correct_touch_column_names = get_header_names(raw_data_headers, mean_correct_touch_header)
+        number_iti_left_column_names = get_header_names(raw_data_headers, iti_to_first_left_header)
+        number_iti_right_column_names = get_header_names(raw_data_headers, iti_to_first_right_header)
 
         df['PercentCorrectTo1stReversal'] = np.nan
         get_percent_correctness_first(df, df_final, number_correct_column_names)
         df_final['PercentCorrectTo1stReversal'] = df['PercentCorrectTo1stReversal']
+
+        df['MeanLatencyTo1stReversal'] = np.nan
+        get_mean_latency_first(df, number_mean_reward_first_column_names)
+        df_final['MeanLatencyTo1stReversal'] = df['MeanLatencyTo1stReversal']
+
+        df['CorrectTouchLatencyTo1stReversal'] = np.nan
+        get_correct_touch_latency_first(df, number_mean_correct_touch_column_names)
+        df_final['CorrectTouchLatencyTo1stReversal'] = df['CorrectTouchLatencyTo1stReversal']
+
+        df['ITIBlankTouchesTo1stReversal'] = np.nan
+        get_iti_blank_touch_first(df, number_iti_left_column_names, number_iti_right_column_names)
+        df_final['ITIBlankTouchesTo1stReversal'] = df['ITIBlankTouchesTo1stReversal']
 
         df['PercentCorrectTo2ndReversal'] = np.nan
         get_percent_correctness_second(df, df_final, number_correct_column_names)

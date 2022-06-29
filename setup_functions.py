@@ -187,3 +187,79 @@ def get_test_type(df1, column_names):
             df1.at[index[0], 'Type'] = 'easy'
         else:
             df1.at[index[0], 'Type'] = 'undetermined'
+
+
+def get_mean_latency_first(df1, column_names):
+    """
+    This function gets the mean latency to the 1st reversal. If an animal does not reach the 1st reversal,
+    the overall mean latency is the 1st reversal mean latency.
+
+    :param df1: A dataframe that represents the raw ABET data file
+    :param df2: A dataframe that represents the cleaned LD Train/LD Probe data
+    :param column_names: A list of column names used to determine the mean latency
+    """
+
+    for index in df1.iterrows():
+        stop_point = df1.at[index[0], 'No trials to criterion - Generic Evaluation (1)']
+        # if did not reach first reversal, make the value the correct mean latency value
+        if np.isnan(stop_point) or index[1]['End Summary - Times Criteria reached (1)'] == 0:
+            stop_point = df1.at[index[0], 'End Summary - Trials Completed (1)']
+            int_stop_point = int(stop_point)
+
+            df1.at[index[0], 'MeanLatencyTo1stReversal'] = (df1[column_names[0:int_stop_point + 1]].mean(axis=1)[
+                index[0]])
+        else:
+            int_stop_point = int(stop_point)
+            df1.at[index[0], 'MeanLatencyTo1stReversal'] = (df1[column_names[0:int_stop_point]].mean(axis=1)[
+                index[0]])
+
+def get_correct_touch_latency_first(df1, column_names):
+    """
+    This function gets the mean correct touch latency to the 1st reversal. If an animal does not reach the 1st reversal,
+    the overall mean correct_touch_latency is the 1st reversal mean latency.
+
+    :param df1: A dataframe that represents the raw ABET data file
+    :param df2: A dataframe that represents the cleaned LD Train/LD Probe data
+    :param column_names: A list of column names used to determine the correct touch latency
+    """
+
+    for index in df1.iterrows():
+        stop_point = df1.at[index[0], 'No trials to criterion - Generic Evaluation (1)']
+        # if did not reach first reversal, make the value the correct mean latency value
+        if np.isnan(stop_point) or index[1]['End Summary - Times Criteria reached (1)'] == 0:
+            stop_point = df1.at[index[0], 'End Summary - Trials Completed (1)']
+            int_stop_point = int(stop_point)
+
+            df1.at[index[0], 'CorrectTouchLatencyTo1stReversal'] = (df1[column_names[0:int_stop_point + 1]].mean(axis=1)[
+                index[0]])
+        else:
+            int_stop_point = int(stop_point)
+            df1.at[index[0], 'CorrectTouchLatencyTo1stReversal'] = (df1[column_names[0:int_stop_point]].mean(axis=1)[
+                index[0]])
+
+def get_iti_blank_touch_first(df1, left_column_names, right_column_names):
+    """
+    This function gets the number of blank iti touches to the 1st reversal. If an animal does not reach the 1st reversal,
+    the total blank iti touches is the 1st reversal blank iti touches.
+
+    :param df1: A dataframe that represents the raw ABET data file
+    :param left_column_names: A list of column names used to determine the number left iti blank touches
+    :param right_column_names: A list of column names used to determine the number right iti blank touches
+    """
+
+    for index in df1.iterrows():
+        stop_point = df1.at[index[0], 'No trials to criterion - Generic Evaluation (1)']
+        # if did not reach first reversal, make the value the correct mean latency value
+        if np.isnan(stop_point) or index[1]['End Summary - Times Criteria reached (1)'] == 0:
+            stop_point = df1.at[index[0], 'End Summary - Trials Completed (1)']
+            int_stop_point = int(stop_point)
+
+            df1.at[index[0], 'ITIBlankTouchesTo1stReversal'] = (df1[left_column_names[0:int_stop_point + 1]].sum(axis=1)
+                [index[0]] + (df1[right_column_names[0:int_stop_point + 1]].sum(axis=1)[index[0]]))
+            #mean or sum?
+            # when I used sum: total_iti = 1st reversal
+            # when I used mean: 1/2 total_iti = 1st reversal
+        else:
+            int_stop_point = int(stop_point)
+            df1.at[index[0], 'ITIBlankTouchesTo1stReversal'] = (df1[left_column_names[0:int_stop_point]].sum(axis=1)[
+                index[0]] + (df1[right_column_names[0:int_stop_point]].sum(axis=1)[index[0]]))
