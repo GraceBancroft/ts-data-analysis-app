@@ -33,6 +33,17 @@ acq_parameters = ['Corrects', 'BlankTouches', 'TotalITITouches', 'MeanCorrectTou
 ext_parameters = ['Responses', 'Omissions', 'TotalITITouches', 'MeanResponseTouchLatency', 'MeanBlankTouchLatency',
                   'MeanTrayEntryLatency']
 
+auto_hab_one_parameters = ['BackIRBeamBrokenCount', 'ScreenLeftIRBeamBrokenCount', 'ScreenRightIRBeamBrokenCount',
+                           'CrossedBackToScreen', 'CrossedScreenToBack', 'LeftTouches', 'RightTouches',
+                           'TrayEnteredCount']
+
+auto_hab_two_parameters = ['NumberOfTrial', 'LeftApproaches', 'RightApproaches', 'LeftTouches', 'RightTouches',
+                           'BackBeamBrokenCount', 'TrayEnteredCount', 'MeanRewardCollectionLatency']
+
+auto_parameters = ['NumberOfTrial', 'ApproachesToLitCS+', 'ApproachesToLitCS-', 'TotalApproachesToCS+',
+                   'TotalApproachesToCS-', 'Approach Difference', 'TouchesToLitCS+', 'TouchesToLitCS-',
+                   'TotalTouchesToCS+', 'TotalTouchesToCS-', 'MeanRewardCollectionLatency']
+
 script_location = os.path.dirname(os.path.abspath(__file__))
 
 
